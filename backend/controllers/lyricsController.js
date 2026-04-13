@@ -29,19 +29,26 @@ const getQuizQuestion = async (req, res, next) => {
     const correctIndex = Math.floor(Math.random() * songs.length);
     const correctSong = songs[correctIndex];
 
-    // Get lyric snippet (4 lines)
+    // Get lyric snippet (up to 4 lines)
     const lines = correctSong.lyrics.split("\n");
-    const snippet = lines.slice(0, 4).join("\n");
+    const snippet = lines.slice(0, Math.min(4, lines.length)).join("\n");
+
+    // Fisher-Yates shuffle helper
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
 
     // Generate wrong options from other songs by the same artist
     const otherSongs = songs.filter((_, i) => i !== correctIndex);
-    const shuffled = otherSongs.sort(() => Math.random() - 0.5);
-    const wrongOptions = shuffled.slice(0, 3).map((s) => s.title);
+    const wrongOptions = shuffle(otherSongs).slice(0, 3).map((s) => s.title);
 
     // Build multiple choice options and shuffle
-    const options = [correctSong.title, ...wrongOptions].sort(
-      () => Math.random() - 0.5
-    );
+    const options = shuffle([correctSong.title, ...wrongOptions]);
 
     res.json({
       artist: artistName,
