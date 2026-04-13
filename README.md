@@ -66,8 +66,12 @@ VITE_FIREBASE_APP_ID=your_app_id
 
 ```
 PORT=5000
+NODE_ENV=development
 GENIUS_API_KEY=your_genius_api_key
-FIREBASE_SERVICE_ACCOUNT=path/to/serviceAccountKey.json
+FIREBASE_PROJECT_ID=your_firebase_project_id
+FIREBASE_CLIENT_EMAIL=your_firebase_client_email
+FIREBASE_PRIVATE_KEY=your_firebase_private_key
+FRONTEND_URL=http://localhost:5173
 ```
 
 ### Running the Dev Servers
@@ -86,47 +90,67 @@ The frontend dev server will be available at `http://localhost:5173` and the bac
 
 ## API Endpoints
 
-| Method | Endpoint               | Description                          |
-| ------ | ---------------------- | ------------------------------------ |
-| GET    | `/api/quiz`            | Fetch a random lyric quiz question   |
-| GET    | `/api/quiz/:difficulty`| Fetch a question by difficulty level |
-| POST   | `/api/score`           | Submit a player's score              |
-| GET    | `/api/leaderboard`     | Retrieve the top scores              |
-| GET    | `/api/health`          | Health check                         |
+| Method | Endpoint                  | Description                          |
+| ------ | ------------------------- | ------------------------------------ |
+| POST   | `/api/auth/signup`        | User registration                    |
+| POST   | `/api/auth/login`         | User login                           |
+| GET    | `/api/lyrics/:artist`     | Fetch lyrics for an artist           |
+| GET    | `/api/lyrics/quiz/:artist`| Generate a quiz question for artist  |
+| POST   | `/api/scores`             | Save a game score                    |
+| GET    | `/api/scores/leaderboard` | Get top scores                       |
+| GET    | `/api/users/:userId`      | Get user profile                     |
+| PUT    | `/api/users/:userId`      | Update user profile                  |
+| GET    | `/api/health`             | Health check                         |
 
 ## Project Structure
 
 ```
 Lyric-Maze/
-├── frontend/          # React + Vite + Phaser client
-│   ├── public/
+├── frontend/               # React + Vite + Phaser client
 │   ├── src/
-│   │   ├── components/   # React UI components
-│   │   ├── scenes/       # Phaser game scenes
-│   │   ├── services/     # API and Firebase helpers
-│   │   └── App.jsx
-│   ├── .env
+│   │   ├── components/     # React UI components
+│   │   │   ├── MazeGame.jsx
+│   │   │   ├── LyricQuiz.jsx
+│   │   │   ├── ArtistSetup.jsx
+│   │   │   ├── Leaderboard.jsx
+│   │   │   └── Auth.jsx
+│   │   ├── utils/          # Game logic & API helpers
+│   │   │   ├── mazeGenerator.js
+│   │   │   ├── collisionDetection.js
+│   │   │   ├── gameLogic.js
+│   │   │   └── api.js
+│   │   ├── styles/         # CSS stylesheets
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── firebase.js
+│   ├── index.html
+│   ├── vite.config.js
+│   ├── .env.example
 │   └── package.json
-├── backend/           # Express API server
-│   ├── src/
-│   │   ├── routes/       # Express route handlers
-│   │   ├── services/     # Genius API & Firebase logic
-│   │   └── index.js
-│   ├── .env
+├── backend/                # Express API server
+│   ├── routes/             # Express route handlers
+│   ├── controllers/        # Request handlers
+│   ├── middleware/          # Auth middleware
+│   ├── services/           # Genius API integration
+│   ├── models/             # Seed data
+│   ├── server.js
+│   ├── .env.example
 │   └── package.json
 ├── .gitignore
 ├── CONTRIBUTING.md
-├── LICENSE
 └── README.md
 ```
 
 ## MVP Scope — Phase 1
 
-- Single-player maze with one difficulty level
-- Basic lyric fill-in-the-blank questions sourced from the Genius API
-- Simple scoring (correct answer = +100 points)
+- Procedurally generated maze with arrow-key navigation
+- 3 pre-loaded test artists (The Weeknd, Drake, Ariana Grande) with 5 songs each
+- Lyric-based multiple-choice quizzes appearing at random intervals
+- Combo scoring system with multiplier for consecutive correct answers
+- Wrong answer penalty: player pushed back 5 blocks
 - Global leaderboard stored in Firebase Firestore
 - User authentication via Firebase (email/password)
+- Retro/8-bit aesthetic with neon color palette
 - Playable on modern desktop browsers
 
 ## Contributing
@@ -135,4 +159,4 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for gu
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the MIT License.
