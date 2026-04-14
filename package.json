@@ -1,0 +1,35 @@
+{
+  "name": "lyric-maze",
+  "version": "1.0.0",
+  "description": "Lyric Maze – desktop edition",
+  "main": "electron/main.js",
+  "scripts": {
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "build:frontend": "cd frontend && npm run build",
+    "electron:dev": "npm run build:frontend && electron .",
+    "electron:pack": "npm run build:frontend && electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^39.8.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.lyricmaze.app",
+    "productName": "Lyric Maze",
+    "asar": false,
+    "files": [
+      "electron/**/*",
+      "frontend/dist/**/*",
+      "backend/**/*"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
+}
